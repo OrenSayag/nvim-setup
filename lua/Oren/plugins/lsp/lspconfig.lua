@@ -52,6 +52,9 @@ return {
 				opts.desc = "Restart LSP"
 				vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 
+				opts.desc = "Organize imports"
+				vim.keymap.set("n", "<leader>oo", "<cmd>OrganizeImports<CR>", opts) -- organize imports
+
 				vim.keymap.set("i", "<C-h>", function()
 					vim.lsp.buf.signature_help()
 				end, opts)
@@ -160,6 +163,15 @@ return {
 			root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
 		})
 
+		local function organize_imports()
+			local params = {
+				command = "_typescript.organizeImports",
+				arguments = { vim.api.nvim_buf_get_name(0) },
+				title = "",
+			}
+			vim.lsp.buf.execute_command(params)
+		end
+
 		-- ts_ls (replaces tsserver)
 		lspconfig.ts_ls.setup({
 			capabilities = capabilities,
@@ -173,6 +185,12 @@ return {
 				preferences = {
 					includeCompletionsWithSnippetText = true,
 					includeCompletionsForImportStatements = true,
+				},
+			},
+			commands = {
+				OrganizeImports = {
+					organize_imports,
+					description = "Organize Imports",
 				},
 			},
 		})
