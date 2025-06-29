@@ -17,6 +17,7 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		"onsails/lspkind.nvim", -- vs-code pictograms
 		"roobert/tailwindcss-colorizer-cmp.nvim",
+		"zbirenbaum/copilot-cmp", -- Copilot autocompletion
 	},
 	config = function()
 		local cmp = require("cmp")
@@ -55,6 +56,7 @@ return {
 			Unit = " ",
 			Value = " ",
 			Variable = " ",
+			Copilot = " ",
 		}
 		-- Returns the current column number.
 		local column = function()
@@ -225,6 +227,7 @@ return {
 			},
 			-- autocompletion sources
 			sources = cmp.config.sources({
+				{ name = "copilot" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "lazydev" },
 				{ name = "nvim_lsp" },

@@ -9,8 +9,6 @@ return {
 		---@module 'avante'
 		---@type avante.Config
 		opts = {
-			-- add any opts here
-			-- for example
 			provider = "openai",
 			providers = {
 				claude = {
