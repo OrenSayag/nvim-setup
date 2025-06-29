@@ -11,7 +11,7 @@ return {
 		opts = {
 			-- add any opts here
 			-- for example
-			provider = "claude",
+			provider = "openai",
 			providers = {
 				claude = {
 					endpoint = "https://api.anthropic.com",
@@ -21,6 +21,9 @@ return {
 						temperature = 0.75,
 						max_tokens = 20480,
 					},
+				},
+				openai = {
+					model = "gpt-4o-mini",
 				},
 			},
 		},
