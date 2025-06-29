@@ -195,6 +195,10 @@ return {
 			},
 		})
 
+		lspconfig.intelephense.setup({
+			capabilities = capabilities,
+		})
+
 		-- HACK: If using Blink.cmp Configure all LSPs here
 
 		-- ( comment the ones in mason )
