@@ -201,6 +201,7 @@ return {
 
 		-- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
 		require("luasnip.loaders.from_vscode").lazy_load()
+		require("luasnip.loaders.from_vscode").lazy_load({ paths = "/Users/oren.s/.config/nvim/lua/Oren/snippets/" })
 
 		cmp.setup({
 			experimental = {
@@ -227,10 +228,10 @@ return {
 			},
 			-- autocompletion sources
 			sources = cmp.config.sources({
-				{ name = "copilot" },
+				-- { name = "copilot" },
+				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "lazydev" },
-				{ name = "nvim_lsp" },
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" }, -- file system paths
 				{ name = "tailwindcss-colorizer-cmp" },

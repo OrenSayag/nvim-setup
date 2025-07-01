@@ -1,0 +1,23 @@
+{
+    "React Functional Component": {
+        "prefix": "rfc",
+        "body": [
+            "import { FC } from 'react';",
+            "",
+            "interface Props {",
+            "  className?: string;",
+            "}",
+            "",
+            "export const ${1:name}: FC<Props> = ({ className }) => {",
+            "  return (",
+            "    <>",
+            "      <div className={cn(className)}> ",
+            "        ${1:name} works!",
+            "      </div>",
+            "    </>",
+            "  );",
+            "};"
+        ],
+        "description": "Create a React Functional Component"
+    }
+}

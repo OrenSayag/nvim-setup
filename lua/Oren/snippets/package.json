@@ -1,0 +1,15 @@
+{
+    "name": "nvim-snippets",
+    "author": "oren",
+    "engines": {
+        "vscode": "^1.11.0"
+    },
+    "contributes": {
+        "snippets": [
+            {
+                "language": "typescriptreact",
+                "path": "./react-ts.json"
+            }
+        ]
+    }
+}
