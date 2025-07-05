@@ -228,7 +228,7 @@ return {
 			},
 			-- autocompletion sources
 			sources = cmp.config.sources({
-				-- { name = "copilot" },
+				{ name = "copilot" },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "lazydev" },
@@ -277,14 +277,14 @@ return {
 					end
 				end, { "i", "s" }),
 
-				["<CR>"] = cmp.mapping(function(fallback)
-					if cmp.visible() then
-						local entry = cmp.get_selected_entry()
-						confirm(entry)
-					else
-						fallback()
-					end
-				end, { "i", "s" }),
+				-- ["<CR>"] = cmp.mapping(function(fallback)
+				-- 	if cmp.visible() then
+				-- 		local entry = cmp.get_selected_entry()
+				-- 		confirm(entry)
+				-- 	else
+				-- 		fallback()
+				-- 	end
+				-- end, { "i", "s" }),
 
 				["<S-Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
@@ -302,12 +302,15 @@ return {
 
 				["<Tab>"] = cmp.mapping(function(_fallback)
 					if cmp.visible() then
-						-- if there is only one completion candidate then use it.
-						local entries = cmp.get_entries()
-						if #entries == 1 then
-							confirm(entries[1])
-						else
-							cmp.select_next_item()
+						-- -- if there is only one completion candidate then use it.
+						-- local entries = cmp.get_entries()
+						-- if #entries == 1 then
+						-- 	confirm(entries[1])
+						-- 	--                  else
+						-- cmp.select_next_item()
+						local selected_entry = cmp.get_selected_entry()
+						if selected_entry then
+							confirm(selected_entry)
 						end
 					elseif has_luasnip and luasnip.expand_or_locally_jumpable() then
 						luasnip.expand_or_jump()
