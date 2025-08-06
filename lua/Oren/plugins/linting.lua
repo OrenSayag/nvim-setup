@@ -16,6 +16,7 @@ return {
 			python = { "pylint" },
 			php = { "php" },
 			phpc = { "php" },
+			swift = { "swiftlint" },
 		}
 
 		eslint.args = {

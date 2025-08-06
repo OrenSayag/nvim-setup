@@ -43,6 +43,7 @@ return {
 				html = { "prettier" },
 				php = { "php-cs-fixer" },
 				json = { "prettier" },
+				swift = { "swiftformat" },
 				yaml = { "prettier" },
 				graphql = { "prettier" },
 				liquid = { "prettier" },

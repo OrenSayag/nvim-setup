@@ -34,6 +34,9 @@ return {
 				opts.desc = "Go to decleration in new split"
 				vim.keymap.set("n", "gv", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", opts)
 
+				opts.desc = "Go to decleration in new split"
+				vim.keymap.set("n", "gh", "<cmd>split | lua vim.lsp.buf.definition()<CR>", opts)
+
 				opts.desc = "See available code actions"
 				vim.keymap.set({ "n", "v" }, "<leader>vca", function()
 					vim.lsp.buf.code_action()
@@ -199,6 +202,11 @@ return {
 
 		lspconfig.intelephense.setup({
 			capabilities = capabilities,
+		})
+
+		lspconfig.sourcekit.setup({
+			cmd = { "xcrun", "sourcekit-lsp" },
+			root_dir = require("lspconfig.util").root_pattern("*.xcodeproj", "*.xcworkspace", "Package.swift"),
 		})
 
 		-- HACK: If using Blink.cmp Configure all LSPs here
