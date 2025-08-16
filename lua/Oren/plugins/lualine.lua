@@ -1,93 +1,72 @@
 return {
-	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
-	config = function()
-		local lualine = require("lualine")
-		local lazy_status = require("lazy.status") -- to configure lazy pending updates count
+  "nvim-lualine/lualine.nvim",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    local lualine = require("lualine")
 
-		local colors = {
-            color0 = "#092236",
-            color1 = "#ff5874",
-            color2 = "#c3ccdc",
-			color3 = "#1c1e26",
-			color6 = "#a1aab8",
-			color7 = "#828697",
-			color8 = "#ae81ff",
-		}
-		local my_lualine_theme = {
-			replace = {
-				a = { fg = colors.color0, bg = colors.color1, gui = "bold" },
-				b = { fg = colors.color2, bg = colors.color3 },
-			},
-			inactive = {
-				a = { fg = colors.color6, bg = colors.color3, gui = "bold" },
-				b = { fg = colors.color6, bg = colors.color3 },
-				c = { fg = colors.color6, bg = colors.color3 },
-			},
-			normal = {
-				a = { fg = colors.color0, bg = colors.color7, gui = "bold" },
-				b = { fg = colors.color2, bg = colors.color3 },
-				c = { fg = colors.color2, bg = colors.color3 },
-			},
-			visual = {
-				a = { fg = colors.color0, bg = colors.color8, gui = "bold" },
-				b = { fg = colors.color2, bg = colors.color3 },
-			},
-			insert = {
-				a = { fg = colors.color0, bg = colors.color2, gui = "bold" },
-				b = { fg = colors.color2, bg = colors.color3 },
-			},
-		}
+    local function xcodebuild_device()
+      if vim.g.xcodebuild_platform == "macOS" then
+        return " macOS"
+      end
 
-        local mode = {
-            'mode',
-            fmt = function(str)
-                -- return ' ' 
-                -- displays only the first character of the mode
-                return ' ' .. str
-            end,
-        }
+      if vim.g.xcodebuild_os then
+        return " " .. vim.g.xcodebuild_device_name .. " (" .. vim.g.xcodebuild_os .. ")"
+      end
 
-        local diff = {
-            'diff',
-            colored = true,
-            symbols = { added = ' ', modified = ' ', removed = ' ' }, -- changes diff symbols
-            -- cond = hide_in_width,
-        }
+      return " " .. vim.g.xcodebuild_device_name
+    end
 
-        local filename = {
-            'filename',
-            file_status = true,
-            path = 0,
-        }
-
-        local branch = {'branch', icon = {'', color={fg='#A6D4DE'}}, '|'}
-
-
-		lualine.setup({
-            icons_enabled = true,
-			options = {
-				theme = my_lualine_theme,
-				component_separators = { left = "|", right = "|" },
-				section_separators = { left = "|", right = "" },
-			},
-			sections = {
-                lualine_a = { mode },
-                lualine_b = { branch },
-                lualine_c = { diff, filename },
-				lualine_x = {
-					{
-                        -- require("noice").api.statusline.mode.get,
-                        -- cond = require("noice").api.statusline.mode.has,
-						lazy_status.updates,
-						cond = lazy_status.has_updates,
-						color = { fg = "#ff9e64" },
-					},
-					-- { "encoding",},
-					-- { "fileformat" },
-					{ "filetype" },
-				},
-			},
-		})
-	end,
+    lualine.setup({
+      options = {
+        globalstatus = true,
+        theme = "auto",
+        symbols = {
+          alternate_file = "#",
+          directory = "",
+          readonly = "",
+          unnamed = "[No Name]",
+          newfile = "[New]",
+        },
+        disabled_buftypes = { "quickfix", "prompt" },
+        component_separators = "",
+        section_separators = { left = "", right = "" },
+      },
+      sections = {
+        lualine_a = {
+          -- { "mode" },
+          { "filename" },
+        },
+        lualine_b = {
+          { "diagnostics" },
+          { "diff" },
+          {
+            "searchcount",
+            maxcount = 999,
+            timeout = 500,
+          },
+        },
+        lualine_c = {},
+        lualine_x = {
+          { "' ' .. vim.g.xcodebuild_last_status", color = { fg = "#a6e3a1" } },
+          -- { "'󰙨 ' .. vim.g.xcodebuild_test_plan", color = { fg = "#a6e3a1", bg = "#161622" } },
+          { xcodebuild_device, color = { fg = "#f9e2af", bg = "#161622" } },
+        },
+        lualine_y = {
+          { "branch" },
+        },
+        lualine_z = {
+          { "location" },
+        },
+      },
+      inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { "filename" },
+        lualine_x = {},
+        lualine_y = {},
+        lualine_z = {},
+      },
+      extensions = { "nvim-dap-ui", "quickfix", "trouble", "nvim-tree", "lazy", "mason" },
+    })
+  end,
 }
