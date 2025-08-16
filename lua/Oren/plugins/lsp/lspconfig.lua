@@ -204,10 +204,16 @@ return {
 			capabilities = capabilities,
 		})
 
-		lspconfig.sourcekit.setup({
-			cmd = { "xcrun", "sourcekit-lsp" },
-			root_dir = require("lspconfig.util").root_pattern("*.xcodeproj", "*.xcworkspace", "Package.swift"),
-		})
+   lspconfig["sourcekit"].setup({
+      cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
+      capabilities = capabilities,
+      on_attach = on_attach,
+      on_init = function(client)
+        -- HACK: to fix some issues with LSP
+        -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154
+        client.offset_encoding = "utf-8"
+      end,
+    })
 
 		-- HACK: If using Blink.cmp Configure all LSPs here
 
