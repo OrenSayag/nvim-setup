@@ -30,12 +30,14 @@ return {
 			end,
 		}
 
-		vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-			group = lint_augroup,
-			callback = function()
-				lint.try_lint()
-			end,
-		})
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" }, {
+      group = lint_augroup,
+      callback = function()
+        if not vim.endswith(vim.fn.bufname(), "swiftinterface") then
+          require("lint").try_lint()
+        end
+      end,
+    })
 
 		vim.keymap.set("n", "<leader>l", function()
 			lint.try_lint()
