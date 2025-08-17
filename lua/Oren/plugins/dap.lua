@@ -29,6 +29,62 @@ local function setupListeners()
 	end
 end
 
+local function setupJs()
+	local dap = require("dap")
+	dap.adapters.chrome = {
+		type = "executable",
+		command = "node",
+		args = { os.getenv("HOME") .. "/tools/vscode-chrome-debug/out/src/chromeDebug.js" }, -- TODO adjust
+	}
+
+	dap.configurations.javascriptreact = { -- change this to javascript if needed
+		{
+			type = "chrome",
+			request = "attach",
+			program = "${file}",
+			cwd = vim.fn.getcwd(),
+			sourceMaps = true,
+			protocol = "inspector",
+			port = 9222,
+			webRoot = "${workspaceFolder}",
+		},
+	}
+
+	dap.configurations.typescriptreact = { -- change to typescript if needed
+		{
+			type = "chrome",
+			request = "attach",
+			program = "${file}",
+			cwd = vim.fn.getcwd(),
+			sourceMaps = true,
+			protocol = "inspector",
+			port = 9222,
+			webRoot = "${workspaceFolder}",
+		},
+	}
+
+	dap.adapters["pwa-node"] = {
+		type = "server",
+		host = "localhost",
+		port = "${port}",
+		executable = {
+			command = "node",
+			-- 💀 Make sure to update this path to point to your installation
+			args = { os.getenv("HOME") .. "/tools/js-debug/src/dapDebugServer.js", "${port}" },
+		},
+	}
+
+	dap.configurations.javascript = {
+		{
+			type = "pwa-node",
+			request = "launch",
+			name = "Launch file",
+			program = "${file}",
+			cwd = "${workspaceFolder}",
+		},
+	}
+end
+
 return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
@@ -49,6 +105,7 @@ return {
 		define("DapLogPoint", { text = "", texthl = "DiagnosticInfo", linehl = "", numhl = "" })
 
 		setupListeners()
+		setupJs()
 
 		--when breakpoint is hit, it sets the focus to the buffer with the breakpoint
 		require("dap").defaults.fallback.switchbuf = "usetab,uselast"
