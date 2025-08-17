@@ -2,10 +2,11 @@ local function setupListeners()
 	local dap = require("dap")
 	local areSet = false
 
+	vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue", noremap = true })
+
 	dap.listeners.after["event_initialized"]["me"] = function()
 		if not areSet then
 			areSet = true
-			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue", noremap = true })
 			vim.keymap.set("n", "<leader>dC", dap.run_to_cursor, { desc = "Run To Cursor" })
 			vim.keymap.set("n", "<leader>ds", dap.step_over, { desc = "Step Over" })
 			vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
@@ -29,12 +30,33 @@ local function setupListeners()
 	end
 end
 
+local function setupPhp()
+	local dap = require("dap")
+	dap.adapters.php = {
+		type = "executable",
+		command = "node",
+		args = { os.getenv("HOME") .. "/tools/vscode-php-debug/out/phpDebug.js" },
+	}
+
+	dap.configurations.php = {
+		{
+			type = "php",
+			request = "launch",
+			name = "Listen for Xdebug",
+			port = 9003,
+			pathMappings = {
+				["/app"] = "${workspaceRoot}",
+			},
+		},
+	}
+end
+
 local function setupJs()
 	local dap = require("dap")
 	dap.adapters.chrome = {
 		type = "executable",
 		command = "node",
-		args = { os.getenv("HOME") .. "/tools/vscode-chrome-debug/out/src/chromeDebug.js" }, -- TODO adjust
+		args = { os.getenv("HOME") .. "/tools/vscode-chrome-debug/out/src/chromeDebug.js" },
 	}
 
 	dap.configurations.javascriptreact = { -- change this to javascript if needed
@@ -89,6 +111,7 @@ return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
 		"wojciech-kulik/xcodebuild.nvim",
+		{ "theHamsta/nvim-dap-virtual-text", opts = {} },
 	},
 	config = function()
 		local xcodebuild = require("xcodebuild.integrations.dap")
@@ -106,6 +129,7 @@ return {
 
 		setupListeners()
 		setupJs()
+		setupPhp()
 
 		--when breakpoint is hit, it sets the focus to the buffer with the breakpoint
 		require("dap").defaults.fallback.switchbuf = "usetab,uselast"
