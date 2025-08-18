@@ -45,7 +45,7 @@ local function setupPhp()
 			name = "Listen for Xdebug",
 			port = 9003,
 			pathMappings = {
-				["/app"] = "${workspaceRoot}",
+				["/app/"] = "${workspaceRoot}/",
 			},
 		},
 	}
