@@ -38,6 +38,7 @@ return {
 				strategies = {
 					chat = {
 						adapter = "openai",
+						model = "gpt-5",
 					},
 					inline = {
 						adapter = "openai",
