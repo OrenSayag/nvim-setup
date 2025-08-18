@@ -2,11 +2,10 @@ local function setupListeners()
 	local dap = require("dap")
 	local areSet = false
 
-	vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue", noremap = true })
-
 	dap.listeners.after["event_initialized"]["me"] = function()
 		if not areSet then
 			areSet = true
+			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue", noremap = true })
 			vim.keymap.set("n", "<leader>dC", dap.run_to_cursor, { desc = "Run To Cursor" })
 			vim.keymap.set("n", "<leader>ds", dap.step_over, { desc = "Step Over" })
 			vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
