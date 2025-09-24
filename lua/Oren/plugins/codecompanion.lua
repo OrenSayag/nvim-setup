@@ -37,10 +37,10 @@ return {
 			codecompanion.setup({
 				strategies = {
 					chat = {
-						-- adapter = "openai",
-						-- model = "gpt-5",
 						adapter = "openai",
-						model = "gpt-5",
+						model = "gpt-4.1",
+						-- adapter = "claude",
+						-- model = "claude-sonnet-4-20250514",
 					},
 					inline = {
 						adapter = "openai",
