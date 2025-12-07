@@ -57,8 +57,6 @@ return {
 				opts.desc = "Restart LSP"
 				vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 
-				opts.desc = "Organize imports"
-				vim.keymap.set("n", "<leader>oo", "<cmd>OrganizeImports<CR>", opts) -- organize imports
 
 				vim.keymap.set("i", "<C-h>", function()
 					vim.lsp.buf.signature_help()
@@ -99,7 +97,7 @@ return {
 		local capabilities = cmp_nvim_lsp.default_capabilities()
 
 		-- Config lsp servers here
-		-- lua_ls
+		-- lua_ls (needed for Neovim config files)
 		lspconfig.lua_ls.setup({
 			capabilities = capabilities,
 			settings = {
@@ -119,101 +117,30 @@ return {
 				},
 			},
 		})
-		-- emmet_ls
-		lspconfig.emmet_ls.setup({
+
+		-- gopls (Go language server)
+		lspconfig.gopls.setup({
 			capabilities = capabilities,
-			filetypes = {
-				"html",
-				"typescriptreact",
-				"javascriptreact",
-				"css",
-				"sass",
-				"scss",
-				"less",
-				"svelte",
-			},
 		})
-
-		-- emmet_language_server
-		lspconfig.emmet_language_server.setup({
-			capabilities = capabilities,
-			filetypes = {
-				"css",
-				"eruby",
-				"html",
-				"javascript",
-				"javascriptreact",
-				"less",
-				"sass",
-				"scss",
-				"pug",
-				"typescriptreact",
-			},
-			init_options = {
-				includeLanguages = {},
-				excludeLanguages = {},
-				extensionsPath = {},
-				preferences = {},
-				showAbbreviationSuggestions = true,
-				showExpandedAbbreviation = "always",
-				showSuggestionsAsSnippets = false,
-				syntaxProfiles = {},
-				variables = {},
-			},
-		})
-
-		-- denols
-		lspconfig.denols.setup({
-			capabilities = capabilities,
-			root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-		})
-
-		local function organize_imports()
-			local params = {
-				command = "_typescript.organizeImports",
-				arguments = { vim.api.nvim_buf_get_name(0) },
-				title = "",
-			}
-			vim.lsp.buf.execute_command(params)
-		end
-
-		-- ts_ls (replaces tsserver)
-		lspconfig.ts_ls.setup({
-			capabilities = capabilities,
-			root_dir = function(fname)
-				local util = lspconfig.util
-				return not util.root_pattern("deno.json", "deno.jsonc")(fname)
-					and util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")(fname)
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			pattern = "*.go",
+			callback = function()
+				local params = vim.lsp.util.make_range_params()
+				params.context = { only = { "source.organizeImports" } }
+				local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+				for cid, res in pairs(result or {}) do
+					for _, r in pairs(res.result or {}) do
+						if r.edit then
+							local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+							vim.lsp.util.apply_workspace_edit(r.edit, enc)
+						end
+					end
+				end
+				vim.lsp.buf.format({ async = false })
 			end,
-			single_file_support = false,
-			init_options = {
-				preferences = {
-					includeCompletionsWithSnippetText = true,
-					includeCompletionsForImportStatements = true,
-				},
-			},
-			commands = {
-				OrganizeImports = {
-					organize_imports,
-					description = "Organize Imports",
-				},
-			},
 		})
 
-		lspconfig.intelephense.setup({
-			capabilities = capabilities,
-		})
-
-   lspconfig["sourcekit"].setup({
-      cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
-      capabilities = capabilities,
-      on_attach = on_attach,
-      on_init = function(client)
-        -- HACK: to fix some issues with LSP
-        -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154
-        client.offset_encoding = "utf-8"
-      end,
-    })
+		-- Note: Flutter/Dart LSP is handled by flutter-tools.nvim plugin
 
 		-- HACK: If using Blink.cmp Configure all LSPs here
 

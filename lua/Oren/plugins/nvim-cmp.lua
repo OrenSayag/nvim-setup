@@ -16,15 +16,12 @@ return {
 		"rafamadriz/friendly-snippets", -- snippets
 		"nvim-treesitter/nvim-treesitter",
 		"onsails/lspkind.nvim", -- vs-code pictograms
-		"roobert/tailwindcss-colorizer-cmp.nvim",
-		"zbirenbaum/copilot-cmp", -- Copilot autocompletion
 	},
 	config = function()
 		local cmp = require("cmp")
 		-- local luasnip = require("luasnip")
 		local has_luasnip, luasnip = pcall(require, "luasnip")
 		local lspkind = require("lspkind")
-		local colorizer = require("tailwindcss-colorizer-cmp").formatter
 
 		local rhs = function(keys)
 			return vim.api.nvim_replace_termcodes(keys, true, true, true)
@@ -56,7 +53,6 @@ return {
 			Unit = " ",
 			Value = " ",
 			Variable = " ",
-			Copilot = " ",
 		}
 		-- Returns the current column number.
 		local column = function()
@@ -228,13 +224,11 @@ return {
 			},
 			-- autocompletion sources
 			sources = cmp.config.sources({
-				{ name = "copilot" },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "lazydev" },
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" }, -- file system paths
-				{ name = "tailwindcss-colorizer-cmp" },
 			}),
 			-- mapping = cmp.mapping.preset.insert({
 			--     ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
@@ -336,15 +330,11 @@ return {
 						latex_symbols = "[LaTeX]",
 					})[entry.source.name]
 
-					-- use lspkind and tailwindcss-colorizer-cmp for additional formatting
+					-- use lspkind for formatting
 					vim_item = lspkind.cmp_format({
 						maxwidth = 25,
 						ellipsis_char = "...",
 					})(entry, vim_item)
-
-					if entry.source.name == "nvim_lsp" then
-						vim_item = colorizer(entry, vim_item)
-					end
 
 					return vim_item
 				end,

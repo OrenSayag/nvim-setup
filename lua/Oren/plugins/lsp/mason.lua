@@ -28,28 +28,18 @@ return {
 			automatic_enable = false,
 			-- servers for mason to install
 			ensure_installed = {
-				"lua_ls",
-				-- "ts_ls", currently using a ts plugin
-				"html",
-				"intelephense",
-				"cssls",
-				"tailwindcss",
-				"emmet_ls",
-				"emmet_language_server",
-				-- "eslint",
-				"marksman",
+				"lua_ls", -- needed for Neovim config
+				"gopls", -- Go language server
+				"dartls", -- Dart/Flutter language server
 			},
 		})
 
 		mason_tool_installer.setup({
 			ensure_installed = {
-				"prettier", -- prettier formatter
-				"stylua", -- lua formatter
-				"isort", -- python formatter
-				"pylint",
-				"clangd",
-				"denols",
-				{ "eslint_d", version = "13.1.2" },
+				"stylua", -- lua formatter (needed for Neovim config)
+				"gofumpt", -- Go formatter
+				"goimports", -- Go imports formatter
+				"golangci-lint", -- Go linter
 			},
 		})
 	end,
