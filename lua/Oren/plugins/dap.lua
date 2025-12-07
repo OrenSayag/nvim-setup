@@ -29,39 +29,96 @@ local function setupListeners()
 	end
 end
 
+local function setupPhp()
+	local dap = require("dap")
+	dap.adapters.php = {
+		type = "executable",
+		command = "node",
+		args = { os.getenv("HOME") .. "/tools/vscode-php-debug/out/phpDebug.js" },
+	}
 
-local function setupGo()
-	require("dap-go").setup({
-		dap_configurations = {
-			{
-				type = "go",
-				name = "Attach remote",
-				mode = "remote",
-				request = "attach",
+	dap.configurations.php = {
+		{
+			type = "php",
+			request = "launch",
+			name = "Listen for Xdebug",
+			port = 9003,
+			pathMappings = {
+				["/app/"] = "${workspaceRoot}/",
 			},
 		},
-		delve = {
-			path = "dlv",
-			initialize_timeout_sec = 20,
-			port = "${port}",
-			args = {},
-			build_flags = {},
-			detached = vim.fn.has("win32") == 0,
-			cwd = nil,
+	}
+end
+
+local function setupJs()
+	local dap = require("dap")
+	dap.adapters.chrome = {
+		type = "executable",
+		command = "node",
+		args = { os.getenv("HOME") .. "/tools/vscode-chrome-debug/out/src/chromeDebug.js" },
+	}
+
+	dap.configurations.javascriptreact = { -- change this to javascript if needed
+		{
+			type = "chrome",
+			request = "attach",
+			program = "${file}",
+			cwd = vim.fn.getcwd(),
+			sourceMaps = true,
+			protocol = "inspector",
+			port = 9222,
+			webRoot = "${workspaceFolder}",
 		},
-		tests = {
-			verbose = false,
+	}
+
+	dap.configurations.typescriptreact = { -- change to typescript if needed
+		{
+			type = "chrome",
+			request = "attach",
+			program = "${file}",
+			cwd = vim.fn.getcwd(),
+			sourceMaps = true,
+			protocol = "inspector",
+			port = 9222,
+			webRoot = "${workspaceFolder}",
 		},
-	})
+	}
+
+	dap.adapters["pwa-node"] = {
+		type = "server",
+		host = "localhost",
+		port = "${port}",
+		executable = {
+			command = "node",
+			-- 💀 Make sure to update this path to point to your installation
+			args = { os.getenv("HOME") .. "/tools/js-debug/src/dapDebugServer.js", "${port}" },
+		},
+	}
+
+	dap.configurations.javascript = {
+		{
+			type = "pwa-node",
+			request = "launch",
+			name = "Launch file",
+			program = "${file}",
+			cwd = "${workspaceFolder}",
+		},
+	}
 end
 
 return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
+		"wojciech-kulik/xcodebuild.nvim",
 		{ "theHamsta/nvim-dap-virtual-text", opts = {} },
-		"leoluz/nvim-dap-go",
 	},
 	config = function()
+		local xcodebuild = require("xcodebuild.integrations.dap")
+
+		-- TODO: make sure to set path to your codelldb
+		local codelldbPath = os.getenv("HOME") .. "/tools/codelldb-aarch64-darwin/extension/adapter/codelldb"
+		xcodebuild.setup(codelldbPath)
+
 		local define = vim.fn.sign_define
 		define("DapBreakpoint", { text = "", texthl = "DiagnosticError", linehl = "", numhl = "" })
 		define("DapBreakpointRejected", { text = "", texthl = "DiagnosticError", linehl = "", numhl = "" })
@@ -70,11 +127,24 @@ return {
 		define("DapLogPoint", { text = "", texthl = "DiagnosticInfo", linehl = "", numhl = "" })
 
 		setupListeners()
-		setupGo()
+		setupJs()
+		setupPhp()
 
 		--when breakpoint is hit, it sets the focus to the buffer with the breakpoint
 		require("dap").defaults.fallback.switchbuf = "usetab,uselast"
 
-		-- Note: Flutter/Dart debugging is handled by flutter-tools.nvim plugin
+    --stylua: ignore start
+    vim.keymap.set("n", "<leader>dd", xcodebuild.build_and_debug, { desc = "Build & Debug" })
+    vim.keymap.set("n", "<leader>dr", xcodebuild.debug_without_build, { desc = "Debug Without Building" })
+    vim.keymap.set("n", "<leader>dt", xcodebuild.debug_tests, { desc = "Debug Tests" })
+    vim.keymap.set("n", "<leader>dT", xcodebuild.debug_class_tests, { desc = "Debug Class Tests" })
+    vim.keymap.set("n", "<leader>b", xcodebuild.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+    vim.keymap.set("n", "<leader>B", xcodebuild.toggle_message_breakpoint, { desc = "Toggle Message Breakpoint" })
+		--stylua: ignore end
+
+		vim.keymap.set("n", "<leader>dx", function()
+			xcodebuild.terminate_session()
+			require("dap").listeners.after["event_terminated"]["me"]()
+		end, { desc = "Terminate debugger" })
 	end,
 }
