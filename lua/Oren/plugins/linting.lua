@@ -19,25 +19,36 @@ return {
 			swift = { "swiftlint" },
 		}
 
-		eslint.args = {
-			"--no-warn-ignored",
-			"--format",
-			"json",
-			"--stdin",
-			"--stdin-filename",
-			function()
-				return vim.fn.expand("%:p")
-			end,
-		}
+	eslint.args = {
+		"--no-warn-ignored",
+		"--format",
+		"json",
+		"--stdin",
+		"--stdin-filename",
+		function()
+			return vim.fn.expand("%:p")
+		end,
+	}
 
-    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" }, {
-      group = lint_augroup,
-      callback = function()
-        if not vim.endswith(vim.fn.bufname(), "swiftinterface") then
-          require("lint").try_lint()
-        end
-      end,
-    })
+	-- Debounce linting to avoid running on every keystroke
+	local lint_timer = nil
+	local function debounced_lint()
+		if lint_timer then
+			lint_timer:stop()
+		end
+		lint_timer = vim.defer_fn(function()
+			if not vim.endswith(vim.fn.bufname(), "swiftinterface") then
+				require("lint").try_lint()
+			end
+			lint_timer = nil
+		end, 500) -- Wait 500ms after last change
+	end
+
+	-- Only lint on save and after leaving insert mode (not on every keystroke)
+	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+		group = lint_augroup,
+		callback = debounced_lint,
+	})
 
 		vim.keymap.set("n", "<leader>l", function()
 			lint.try_lint()

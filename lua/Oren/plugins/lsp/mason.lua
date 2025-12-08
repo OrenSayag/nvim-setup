@@ -1,6 +1,7 @@
 return {
 	"williamboman/mason.nvim",
-	lazy = false,
+	-- Lazy load mason - only needed when LSP config loads
+	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",

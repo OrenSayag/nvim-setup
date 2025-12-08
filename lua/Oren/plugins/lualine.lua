@@ -1,5 +1,7 @@
 return {
   "nvim-lualine/lualine.nvim",
+  -- Statusline should load early but after colorscheme
+  event = "VeryLazy",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
     local lualine = require("lualine")

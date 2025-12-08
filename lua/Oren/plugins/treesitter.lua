@@ -16,33 +16,27 @@ return {
 				indent = { enable = true },
 
 				-- ensure these languages parsers are installed
+				-- Reduced list to most commonly used parsers for faster startup
+				-- Other parsers will be installed on-demand when needed
 				ensure_installed = {
 					"json",
 					"javascript",
 					"typescript",
 					"tsx",
-					"go",
-					"yaml",
 					"html",
 					"css",
 					"python",
-					"http",
-					"prisma",
 					"markdown",
 					"markdown_inline",
-					"svelte",
-					"graphql",
 					"bash",
 					"lua",
 					"vim",
-					"dockerfile",
-					"gitignore",
-					"query",
-					"vimdoc",
-					"c",
-					"java",
-					"rust",
+					"yaml",
 				},
+				-- Install parsers asynchronously to avoid blocking startup
+				sync_install = false,
+				-- Automatically install missing parsers when entering buffer
+				auto_install = true,
 				incremental_selection = {
 					enable = true,
 					keymaps = {

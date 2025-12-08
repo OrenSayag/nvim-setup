@@ -1,6 +1,6 @@
 return {
 	"hrsh7th/nvim-cmp",
-	-- event = "InsertEnter",
+	event = "InsertEnter", -- Lazy load on first insert mode entry
 	branch = "main", -- fix for deprecated functions coming in nvim 0.13
 	dependencies = {
 		"hrsh7th/cmp-buffer", -- source for text in buffer
@@ -232,7 +232,17 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- snippets
 				{ name = "lazydev" },
-				{ name = "buffer" }, -- text within current buffer
+				{ 
+					name = "buffer", -- text within current buffer
+					option = {
+						-- Limit buffer completion to nearby lines for better performance
+						get_bufnrs = function()
+							return { vim.api.nvim_get_current_buf() }
+						end,
+						-- Only show completions from visible buffers
+						max_item_count = 5,
+					},
+				},
 				{ name = "path" }, -- file system paths
 				{ name = "tailwindcss-colorizer-cmp" },
 			}),
@@ -362,29 +372,38 @@ return {
 		-- from: https://github.com/hrsh7th/nvim-cmp/issues/2035#issuecomment-2347186210
 
 		local config = require("cmp.config")
+		local ghost_text_timer = nil
 		local toggle_ghost_text = function()
 			if vim.api.nvim_get_mode().mode ~= "i" then
 				return
 			end
 
-			local cursor_column = vim.fn.col(".")
-			local current_line_contents = vim.fn.getline(".")
-			local character_after_cursor = current_line_contents:sub(cursor_column, cursor_column)
-
-			local should_enable_ghost_text = character_after_cursor == ""
-				or vim.fn.match(character_after_cursor, [[\k]]) == -1
-
-			local current = config.get().experimental.ghost_text
-			if current ~= should_enable_ghost_text then
-				config.set_global({
-					experimental = {
-						ghost_text = should_enable_ghost_text,
-					},
-				})
+			-- Debounce to avoid running on every cursor movement
+			if ghost_text_timer then
+				ghost_text_timer:stop()
 			end
+			ghost_text_timer = vim.defer_fn(function()
+				local cursor_column = vim.fn.col(".")
+				local current_line_contents = vim.fn.getline(".")
+				local character_after_cursor = current_line_contents:sub(cursor_column, cursor_column)
+
+				local should_enable_ghost_text = character_after_cursor == ""
+					or vim.fn.match(character_after_cursor, [[\k]]) == -1
+
+				local current = config.get().experimental.ghost_text
+				if current ~= should_enable_ghost_text then
+					config.set_global({
+						experimental = {
+							ghost_text = should_enable_ghost_text,
+						},
+					})
+				end
+				ghost_text_timer = nil
+			end, 100) -- Debounce to 100ms
 		end
 
-		vim.api.nvim_create_autocmd({ "InsertEnter", "CursorMovedI" }, {
+		-- Only trigger on InsertEnter, not on every cursor movement
+		vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 			callback = toggle_ghost_text,
 		})
 		-- ! Ghost text stuff ! --

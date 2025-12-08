@@ -3,7 +3,8 @@ return {
 	{
 		"rose-pine/neovim",
 		name = "rose-pine",
-		-- priority = 1000,
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("rose-pine").setup({
 				variant = "main", -- auto, main, moon, or dawn
@@ -41,7 +42,8 @@ return {
 	-- NOTE: gruvbox
 	{
 		"ellisonleao/gruvbox.nvim",
-		-- priority = 1000 ,
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("gruvbox").setup({
 				terminal_colors = true, -- add neovim terminal colors
@@ -74,6 +76,8 @@ return {
 	-- NOTE: Kanagwa
 	{
 		"rebelot/kanagawa.nvim",
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("kanagawa").setup({
 				compile = false, -- enable compiling the colorscheme
@@ -136,7 +140,8 @@ return {
 	-- NOTE: neosolarized
 	{
 		"craftzdog/solarized-osaka.nvim",
-		lazy = false,
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("solarized-osaka").setup({
 				transparent = true,
@@ -190,11 +195,11 @@ return {
 			})
 		end,
 	},
-	-- NOTE : tokyonight
+	-- NOTE : tokyonight (only this one loads immediately since it's the active theme)
 	{
 		"folke/tokyonight.nvim",
 		name = "folkeTokyonight",
-		-- priority = 1000,
+		priority = 1000, -- High priority to load first
 		config = function()
 			local transparent = true
 			local bg = "#011628"
@@ -256,6 +261,8 @@ return {
 	{
 		"qaptoR-nvim/chocolatier.nvim",
 		name = "chocolatier",
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("chocolatier").setup({})
 		end,
@@ -264,8 +271,8 @@ return {
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
-		lazy = false,
-		priority = 1000,
+		-- Lazy load - only load when switching to this colorscheme
+		lazy = true,
 		config = function()
 			require("catppuccin").setup({
 				-- flavour = "macchiato",
@@ -289,8 +296,7 @@ return {
 					}
 				end,
 			})
-
-			vim.cmd([[colorscheme catppuccin]])
+			-- Removed colorscheme command - let user switch manually
 		end,
 	},
 }

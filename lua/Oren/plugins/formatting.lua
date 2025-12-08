@@ -54,8 +54,8 @@ return {
 			},
 			format_on_save = {
 				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
+				async = true, -- Changed to async to prevent blocking UI
+				timeout_ms = 2000, -- Increased timeout for async operations
 			},
 		})
 
@@ -77,8 +77,8 @@ return {
 		vim.keymap.set({ "n", "v" }, "<leader>mp", function()
 			conform.format({
 				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
+				async = true, -- Changed to async to prevent blocking UI
+				timeout_ms = 2000,
 			})
 		end, { desc = " Prettier Format whole file or range (in visual mode) with" })
 	end,

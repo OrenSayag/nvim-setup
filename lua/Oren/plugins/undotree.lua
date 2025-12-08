@@ -1,6 +1,10 @@
 return {
     "mbbill/undotree",
+    -- Lazy load - only needed when toggling undotree
+    keys = {
+        { "<leader>u", vim.cmd.UndotreeToggle, desc = "Toggle Undotree" },
+    },
     config = function()
-        vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+        -- Configuration can be added here if needed
     end,
 }

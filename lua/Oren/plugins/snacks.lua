@@ -3,7 +3,8 @@ return {
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
-		lazy = false,
+		-- Lazy load - loads when first used (picker/input/quickfile)
+		event = "VeryLazy",
 		-- NOTE: Options
 		opts = {
 			styles = {

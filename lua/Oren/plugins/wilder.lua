@@ -1,6 +1,7 @@
 return {
 	"gelguy/wilder.nvim",
-	-- "nvim-telescope/telescope.nvim",
+	-- Lazy load - command-line completion, loads on first use
+	event = "CmdlineEnter",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 		"romgrk/fzy-lua-native",

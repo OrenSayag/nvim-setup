@@ -1,11 +1,11 @@
 return {
 	"nvim-tree/nvim-tree.lua",
 	version = "*",
-	lazy = false,
+	lazy = true, -- Lazy load to improve startup time
+	cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFindFile", "NvimTreeFindFileToggle" },
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 	},
-	show_on_startup = true,
 	config = function()
 		vim.keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFileToggle<CR>")
 		require("nvim-tree").setup({})

@@ -17,9 +17,17 @@ return {
             tailwindcolorizer.setup({
                 color_square_width = 2,
             })
-            vim.api.nvim_create_autocmd( { "BufReadPost", "BufNewFile" }, {
+            -- Only attach colorizer to relevant filetypes to avoid unnecessary processing
+            vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
                 callback = function()
-                  vim.cmd("ColorizerAttachToBuffer")  
+                    local ft = vim.bo.filetype
+                    local relevant_fts = { "html", "css", "javascript", "typescript", "jsx", "tsx", "vue", "svelte" }
+                    for _, relevant_ft in ipairs(relevant_fts) do
+                        if ft == relevant_ft then
+                            vim.cmd("ColorizerAttachToBuffer")
+                            break
+                        end
+                    end
                 end,
             })
         end,

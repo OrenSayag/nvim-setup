@@ -84,9 +84,15 @@ return {
 			signs = {
 				text = signs, -- Enable signs in the gutter
 			},
-			virtual_text = true, -- Specify Enable virtual text for diagnostics
+			virtual_text = {
+				-- Only show virtual text for errors and warnings to reduce overhead
+				severity = { vim.diagnostic.severity.ERROR, vim.diagnostic.severity.WARN },
+				spacing = 0,
+			},
 			underline = true, -- Specify Underline diagnostics
 			update_in_insert = false, -- Keep diagnostics active in insert mode
+			-- Reduce diagnostic update frequency for better performance
+			severity_sort = true,
 		})
 
 		-- NOTE :
@@ -204,10 +210,21 @@ return {
 			capabilities = capabilities,
 		})
 
+   -- Sourcekit setup - defer system call to avoid blocking
+   local sourcekit_path = nil
+   local function get_sourcekit_path()
+     if not sourcekit_path then
+       sourcekit_path = vim.trim(vim.fn.system("xcrun -f sourcekit-lsp"))
+     end
+     return sourcekit_path
+   end
+   
    lspconfig["sourcekit"].setup({
-      cmd = { vim.trim(vim.fn.system("xcrun -f sourcekit-lsp")), },
+      cmd = function()
+        return { get_sourcekit_path() }
+      end,
       capabilities = capabilities,
-      on_attach = on_attach,
+      -- Removed undefined on_attach reference - keymaps are handled by LspAttach autocmd
       on_init = function(client)
         -- HACK: to fix some issues with LSP
         -- more details: https://github.com/neovim/neovim/issues/19237#issuecomment-2237037154

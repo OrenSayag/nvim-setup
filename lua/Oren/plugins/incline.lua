@@ -3,6 +3,8 @@ return {
     {
         "b0o/incline.nvim",
         enabled = true,
+        -- Lazy load - UI enhancement that can load after startup
+        event = "VeryLazy",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
             local devicons = require("nvim-web-devicons")

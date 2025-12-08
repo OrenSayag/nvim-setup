@@ -2,6 +2,11 @@ return {
     "thePrimeagen/harpoon",	
     enabled = true,
     branch = "harpoon2",
+    -- Lazy load - only needed when using harpoon commands
+    keys = {
+        { "<leader>a", function() require("harpoon"):list():add() end, desc = "Harpoon add file" },
+        { "<C-e>", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end },
+    },
     dependencies = {
         "nvim-lua/plenary.nvim",
     },
@@ -15,13 +20,7 @@ return {
             },
         })
         -- Harpoon Nav Interface 
-        vim.keymap.set("n", "<leader>a", function()
-            harpoon:list():add()
-        end, { desc = "Harpoon add file" })
-
-        vim.keymap.set("n", "<C-e>", function()
-            harpoon.ui:toggle_quick_menu(harpoon:list())
-        end)
+        -- Keymaps moved to keys table for lazy loading
 
         -- Harpoon marked files
         vim.keymap.set("n", "<C-y>", function() harpoon:list():select(1) end)
