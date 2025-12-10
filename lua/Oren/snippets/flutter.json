@@ -326,5 +326,29 @@
             "}"
         ],
         "description": "Dart Class snippet with extends keyword"
+    },
+    "Dashbook Story": {
+        "prefix": "str",
+        "body": [
+            "import 'package:dashbook/dashbook.dart';",
+            "import 'package:flutter/material.dart';",
+            "",
+            "import '${TM_FILENAME_BASE/(.*?)(?:\\.stories)?$/$1/}.dart';",
+            "",
+            "void add${TM_FILENAME_BASE/(.*?)(?:\\.stories)?$/${1:/pascalcase}/}Stories(Dashbook dashbook) {",
+            "  dashbook",
+            "      .storiesOf('${TM_FILENAME_BASE/(.*?)(?:\\.stories)?$/${1:/pascalcase}/}')",
+            "      .decorator(CenterDecorator())",
+            "      .add(",
+            "        'default',",
+            "        (context) => const Scaffold(",
+            "          body: Center(",
+            "            child: ${TM_FILENAME_BASE/(.*?)(?:\\.stories)?$/${1:/pascalcase}/}(),",
+            "          ),",
+            "        ),",
+            "      );",
+            "}"
+        ],
+        "description": "Create Dashbook story for current widget from a *.stories.dart file"
     }
 }
