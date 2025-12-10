@@ -156,20 +156,20 @@ return {
 		},
 		-- NOTE: Keymaps
 		keys = {
-			{
-				"<leader>lg",
-				function()
-					require("snacks").lazygit()
-				end,
-				desc = "Lazygit",
-			},
-			{
-				"<leader>gl",
-				function()
-					require("snacks").lazygit.log()
-				end,
-				desc = "Lazygit Logs",
-			},
+			-- {
+			-- 	"<leader>lg",
+			-- 	function()
+			-- 		require("snacks").lazygit()
+			-- 	end,
+			-- 	desc = "Lazygit",
+			-- },
+			-- {
+			-- 	"<leader>gl",
+			-- 	function()
+			-- 		require("snacks").lazygit.log()
+			-- 	end,
+			-- 	desc = "Lazygit Logs",
+			-- },
 			{
 				"<leader>rN",
 				function()
