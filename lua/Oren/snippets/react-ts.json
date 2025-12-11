@@ -134,5 +134,26 @@
             "};"
         ],
         "description": "A generic React Hook Form component using zodResolver, ready to be customized."
+    },
+    "Storybook Story Setup": {
+    		"prefix": "str",
+    		"body": [
+    			"import { Meta, StoryObj } from '@storybook/nextjs-vite';",
+    			"import { ${1:name} } from '.';",
+    			"",
+    			"const meta: Meta<typeof ${1:name}> = {",
+    			"  component: ${1:name},",
+    			"  argTypes: {},",
+    			"  args: {},",
+    			"};",
+    			"",
+    			"export default meta;",
+    			"type Story = StoryObj<typeof ${1:name}>;",
+    			"",
+    			"export const Primary: Story = {",
+    			"  args: {},",
+    			"};"
+    		],
+    		"description": "Create a Storybook story setup for a component"
+    	}
     }
-}

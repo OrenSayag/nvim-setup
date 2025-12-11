@@ -1,6 +1,6 @@
 {
     "Stateless widget snippet": {
-        "prefix": "fstless",
+        "prefix": "stls",
         "body": [
             "import 'package:flutter/material.dart';",
             "",
@@ -16,7 +16,7 @@
         "description": "StatelessWidget snippet"
     },
     "Stateful widget snippet": {
-        "prefix": "fstful",
+        "prefix": "stful",
         "description": "Insert a StatefulWidget",
         "body": [
             "import 'package:flutter/material.dart';",
