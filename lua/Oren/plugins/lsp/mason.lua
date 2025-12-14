@@ -33,7 +33,6 @@ return {
 				-- "ts_ls", currently using a ts plugin
 				"html",
 				"intelephense",
-				"dartls",
 				"cssls",
 				"tailwindcss",
 				"emmet_ls",
